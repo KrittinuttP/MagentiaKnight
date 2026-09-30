@@ -307,7 +307,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
         <div className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-5 text-center sm:px-10">
           <p
             data-hbd-anim
-            className="inline-flex self-center rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase"
+            className="inline-flex self-center rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft"
           >
             {hbd.occasionLabel ?? "Birthday"}
             {/* {hbd.year ? ` · ${hbd.year}` : null} */}
@@ -366,7 +366,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
               className="inline-flex items-center gap-2 rounded-2xl bg-[#c23a55] px-6 py-3.5 text-sm font-normal text-white shadow-[0_10px_30px_rgba(194,58,85,0.35)] transition hover:bg-[#d9506b]"
             >
               <Sparkles className="size-4" />
-              ส่งของขวัญตรงนี้ · 09.10.2026
+              ส่งของขวัญตรงนี้
             </Link>
           </div>
 
@@ -401,7 +401,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                   type="button"
                   data-hbd-media-inner
                   onClick={() => openLightbox(wish.id)}
-                  aria-label={`ดูรูปใหญ่ — ถวายพรโดย ${wish.from}`}
+                  aria-label={`ดูรูปใหญ่ — จาก ${wish.from}`}
                   className="flex w-full cursor-zoom-in justify-center p-3.5 will-change-transform transition hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c23a55]/60 focus-visible:ring-inset sm:p-5"
                 >
                   <ProtectedImage
@@ -434,7 +434,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                 />
                 <div className="min-w-0 text-left">
                   <p className="font-script text-base leading-tight text-gold sm:text-lg">
-                    ถวายพรโดย
+                    จาก
                   </p>
                   <h2
                     className={cn(
@@ -550,7 +550,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             <>
               <DialogHeader className="shrink-0 px-1 pt-0.5 pr-10 sm:px-2">
                 <DialogTitle className={cn(DISPLAY, "text-base sm:text-lg")}>
-                  ถวายพรโดย {activeLightbox.from}
+                  จาก {activeLightbox.from}
                 </DialogTitle>
                 <DialogDescription className="sr-only">
                   ดูการ์ดถวายพรขนาดใหญ่

@@ -411,7 +411,7 @@ export function HbdUploadClient() {
         <div className="mx-auto max-w-lg">
         {/* 1. Hero */}
         <header className="text-center">
-          <p className="inline-flex rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase">
+          <p className="inline-flex rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft ">
             #RoseliaBirthday2026
           </p>
           <h1
@@ -420,11 +420,11 @@ export function HbdUploadClient() {
               "mt-4 text-3xl font-normal text-[#fff5f7] sm:text-4xl"
             )}
           >
-            ส่งการ์ดถวายพร
+            ส่งการ์ดอวยพร
           </h1>
           <RoyalDivider className="mt-4" />
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#e8b4bd]/80 sm:text-base">
-            เชิญเหล่าเซไนท์ส่งของขวัญตรงนี้ในวันเกิดขององค์หญิง Roselia 2026
+           วันเกิดองค์หญิงทั้งที <br/>มีอะไรอยากจะบอกองค์หญิงเนื่องในโอกาสวันเกิดไหมฮะ
           </p>
         </header>
 
@@ -704,7 +704,7 @@ export function HbdUploadClient() {
                         "text-lg font-normal text-[#fff5f7]"
                       )}
                     >
-                      ถวายพรโดย {preview.displayName}
+                      จาก {preview.displayName}
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-[#e8b4bd]/55">
                       ข้อมูลติดต่อจะไม่แสดงบนหน้าเว็บ
