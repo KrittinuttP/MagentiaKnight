@@ -340,9 +340,11 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
               <div className="flex flex-col items-center gap-3">
                 <p>{hbd.subtitle.split(/\s*[—–]\s*/)[0]}</p>
                 <RoyalDivider />
-                <p className="text-[#e8b4bd]/70">
-                  {hbd.subtitle.split(/\s*[—–]\s*/).slice(1).join(" — ")}
-                </p>
+                {hbd.subtitle.split(/\s*[—–]\s*/).slice(1).join(" — ").trim() ? (
+                  <p className="text-[#e8b4bd]/70">
+                    {hbd.subtitle.split(/\s*[—–]\s*/).slice(1).join(" — ")}
+                  </p>
+                ) : null}
               </div>
             ) : (
               <p>{hbd.subtitle}</p>
@@ -351,7 +353,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
 
           <div
             data-hbd-anim
-            className="mt-10 flex flex-col items-center gap-4"
+            className="mt-4 flex flex-col items-center gap-4"
           >
             {hbd.invitation ? (
               <p className="text-base text-[#e8b4bd]/85 sm:text-lg">
