@@ -37,7 +37,7 @@ Stack: Next.js 16 (App Router, TypeScript) · Tailwind CSS 4 · GSAP + `@gsap/re
 ## Assets
 
 - เทมเพลตการ์ด: `public/assets/hbd/template/hbd-card-template.png`
-- รูปโปรไฟล์เริ่มต้น: `public/assets/hbd/default-avatar.png`
+- รูปโปรไฟล์เริ่มต้น: `public/assets/hbd/default-avatar.jpg`
 
 (ตอนนี้ยังเป็นไฟล์ตัวแทน — แทนที่ด้วยไฟล์ชื่อเดิมได้เลย)
 

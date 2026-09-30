@@ -22,6 +22,7 @@ import type {
   HbdSubmissionAction,
   HbdSubmissionRow,
 } from "@/lib/hbd-submissions-store";
+import { HBD_AVATAR_DEFAULT } from "@/lib/hbd-upload";
 import {
   CTA_OUTLINE_CLASS,
   CTA_PRIMARY_CLASS,
@@ -407,7 +408,7 @@ export function AdminHbdClient() {
                     <div className="flex items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={item.avatar_url || "/assets/hbd/default-avatar.png"}
+                        src={item.avatar_url || HBD_AVATAR_DEFAULT}
                         alt=""
                         className="size-11 rounded-full border border-[#c23a55]/40 object-cover shadow-sm"
                       />

@@ -20,6 +20,7 @@ import {
   type HbdContactChannel,
   type HbdUploadDraft,
 } from "@/lib/hbd-upload";
+import { resizeImageFile } from "@/lib/image-resize";
 import { cn } from "@/lib/utils";
 
 const DISPLAY = "font-[family-name:var(--font-display)]";
@@ -86,6 +87,10 @@ function revokeUrl(url?: string) {
   if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
 }
 
+function formatMb(bytes: number) {
+  return `${Math.round(bytes / (1024 * 1024))} MB`;
+}
+
 export function HbdUploadClient() {
   const [phase, setPhase] = useState<Phase>("form");
   const [loading, setLoading] = useState(false);
@@ -103,6 +108,7 @@ export function HbdUploadClient() {
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | undefined>();
   const [cacheReady, setCacheReady] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const [processing, setProcessing] = useState<"card" | "avatar" | null>(null);
 
   const cardInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -182,32 +188,52 @@ export function HbdUploadClient() {
     };
   }
 
-  function onCardChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+  async function prepareImage(
+    event: ChangeEvent<HTMLInputElement>,
+    kind: "card" | "avatar"
+  ): Promise<File | null> {
+    const input = event.target;
+    const file = input.files?.[0];
     setError(null);
-    if (!file) return;
+    if (!file) return null;
 
-    if (file.size > HBD_CARD_TEMPLATE.maxBytes) {
-      setError("ไฟล์การ์ดใหญ่เกินไป (สูงสุด 5 MB)");
-      event.target.value = "";
-      return;
+    const limits = kind === "card" ? HBD_CARD_TEMPLATE : HBD_AVATAR_LIMITS;
+    const label = kind === "card" ? "ไฟล์การ์ด" : "ไฟล์ avatar";
+
+    if (file.size > limits.maxInputBytes) {
+      setError(`${label}ใหญ่เกินไป (สูงสุด ${formatMb(limits.maxInputBytes)})`);
+      input.value = "";
+      return null;
     }
 
-    setCardMedia(file, URL.createObjectURL(file));
+    setProcessing(kind);
+    try {
+      const resized = await resizeImageFile(file, limits.resize);
+      if (resized.size > limits.maxBytes) {
+        setError(
+          `${label}ใหญ่เกินไปหลังย่อแล้ว (สูงสุด ${formatMb(limits.maxBytes)})`
+        );
+        input.value = "";
+        return null;
+      }
+      return resized;
+    } catch {
+      setError(`อ่าน${label}ไม่ได้ — ลองใช้ไฟล์ JPEG / PNG / WebP อื่น`);
+      input.value = "";
+      return null;
+    } finally {
+      setProcessing(null);
+    }
   }
 
-  function onAvatarChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    setError(null);
-    if (!file) return;
+  async function onCardChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = await prepareImage(event, "card");
+    if (file) setCardMedia(file, URL.createObjectURL(file));
+  }
 
-    if (file.size > HBD_AVATAR_LIMITS.maxBytes) {
-      setError("ไฟล์ avatar ใหญ่เกินไป (สูงสุด 2 MB)");
-      event.target.value = "";
-      return;
-    }
-
-    setAvatarMedia(file, URL.createObjectURL(file));
+  async function onAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = await prepareImage(event, "avatar");
+    if (file) setAvatarMedia(file, URL.createObjectURL(file));
   }
 
   function clearCard() {
@@ -235,6 +261,7 @@ export function HbdUploadClient() {
 
   async function onSubmitForm(event: FormEvent) {
     event.preventDefault();
+    if (processing) return;
     const problem = validateForm();
     if (problem) {
       setError(problem);
@@ -412,7 +439,7 @@ export function HbdUploadClient() {
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={HBD_CARD_TEMPLATE.path}
+            src={HBD_CARD_TEMPLATE.previewPath}
             alt="ตัวอย่างเทมเพลตการ์ดอวยพร"
             className="h-auto w-full max-w-[13rem] rounded-2xl object-contain shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10 sm:max-w-[14.5rem]"
           />
@@ -453,7 +480,7 @@ export function HbdUploadClient() {
                 <h2 className={labelClass}>อัปโหลดการ์ด *</h2>
               </div>
               <p className={hintClass}>
-                ใช้ไฟล์ที่แก้จากเทมเพลต · สูงสุด 5 MB
+                ใช้ไฟล์ที่แก้จากเทมเพลต · ระบบจะย่อขนาดรูปให้อัตโนมัติ
               </p>
               <input
                 ref={cardInputRef}
@@ -465,13 +492,23 @@ export function HbdUploadClient() {
               <button
                 type="button"
                 onClick={() => cardInputRef.current?.click()}
+                disabled={processing === "card"}
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
                   "mt-4 w-full rounded-2xl border-white/15 bg-white/[0.03] text-sm text-[#f7d7de] hover:border-[#c23a55]/40 hover:bg-[#c23a55]/10 hover:text-[#fff5f7]"
                 )}
               >
-                <Upload className="size-4" />
-                เลือกไฟล์การ์ด
+                {processing === "card" ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    กำลังย่อรูป…
+                  </>
+                ) : (
+                  <>
+                    <Upload className="size-4" />
+                    เลือกไฟล์การ์ด
+                  </>
+                )}
               </button>
               <p className="mt-2 truncate text-xs text-[#e8b4bd]/60">
                 {cardFile ? cardFile.name : "ยังไม่ได้เลือกไฟล์"}
@@ -505,7 +542,7 @@ export function HbdUploadClient() {
                       className="size-[4.5rem] rounded-full object-cover ring-2 ring-[#c23a55]/35"
                     />
                     <span className="mt-2 block text-xs text-[#c23a55]">
-                      เปลี่ยนรูป
+                      {processing === "avatar" ? "กำลังย่อรูป…" : "เปลี่ยนรูป"}
                     </span>
                     <input
                       ref={avatarInputRef}
@@ -536,7 +573,7 @@ export function HbdUploadClient() {
                     required
                   />
                   <p className={hintClass}>
-                    รูปโปรไฟล์ไม่บังคับ · ไม่ใส่ใช้รูปเริ่มต้น · สูงสุด 2 MB
+                    รูปโปรไฟล์ไม่บังคับ · ไม่ใส่ใช้รูปเริ่มต้น
                   </p>
                 </label>
               </div>
@@ -608,7 +645,7 @@ export function HbdUploadClient() {
             <div className="flex flex-col gap-3">
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || processing !== null}
                 className={cn(
                   buttonVariants({ size: "lg" }),
                   "h-12 w-full rounded-2xl border-transparent bg-[#c23a55] text-sm font-normal text-white shadow-[0_8px_24px_rgba(194,58,85,0.3)] hover:bg-[#d9506b]"

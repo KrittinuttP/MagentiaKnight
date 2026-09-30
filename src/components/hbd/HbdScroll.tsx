@@ -20,13 +20,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { HBD_AVATAR_DEFAULT } from "@/lib/hbd-upload";
-import { gsap, registerGsapPlugins, useGSAP } from "@/lib/gsap";
+import {
+  gsap,
+  registerGsapPlugins,
+  ScrollTrigger,
+  useGSAP,
+} from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import type { HbdPage } from "@/types/hbd";
 
 registerGsapPlugins();
 
 const DISPLAY = "font-[family-name:var(--font-display)]";
+
+/** Cards above the fold load immediately; the rest load as they scroll near. */
+const EAGER_CARD_COUNT = 2;
 
 type HbdScrollProps = {
   hbd: HbdPage;
@@ -94,6 +102,25 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxIndex, lightboxItems.length]);
+
+  // Lazy images change card heights after load; trigger positions must follow.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onLoad = (event: Event) => {
+      if (!(event.target instanceof HTMLImageElement)) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => ScrollTrigger.refresh(), 150);
+    };
+
+    root.addEventListener("load", onLoad, true);
+    return () => {
+      clearTimeout(timer);
+      root.removeEventListener("load", onLoad, true);
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -326,7 +353,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
 
       {/* Wishes — full card art, stacked reading column */}
       <div className="relative mx-auto flex max-w-2xl flex-col gap-20 px-4 pb-16 sm:gap-28 sm:px-6 sm:pb-24">
-        {wishes.map((wish) => (
+        {wishes.map((wish, index) => (
           <section
             key={wish.id}
             data-hbd-card
@@ -348,8 +375,13 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                   <ProtectedImage
                     src={wish.image}
                     alt={wish.alt ?? `Wish from ${wish.from}`}
-                    loading={wish.loadOnDemand ? "lazy" : "eager"}
-                    className="h-auto w-full max-w-full object-contain"
+                    loading={
+                      !wish.loadOnDemand && index < EAGER_CARD_COUNT
+                        ? "eager"
+                        : "lazy"
+                    }
+                    decoding="async"
+                    className="h-auto w-full max-w-full object-contain [aspect-ratio:auto_2000/1414]"
                   />
                 </button>
               ) : (
@@ -364,6 +396,8 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                 <ProtectedImage
                   src={wish.avatar || HBD_AVATAR_DEFAULT}
                   alt=""
+                  loading={index < EAGER_CARD_COUNT ? "eager" : "lazy"}
+                  decoding="async"
                   className="size-12 shrink-0 rounded-full object-cover ring-2 ring-[#c23a55]/35 sm:size-14"
                 />
                 <h2
