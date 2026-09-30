@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --radius: 0.625rem;
+}
+
+/* Black / deep-red palette (Roselia): #000000 · #430a17 · #570d1e, accent #c23a55 */
+.dark {
+  --background: #000000;
+  --foreground: #fff5f7;
+  --card: #430a17;
+  --card-foreground: #fff5f7;
+  --popover: #1a0409;
+  --popover-foreground: #fff5f7;
+  --primary: #c23a55;
+  --primary-foreground: #ffffff;
+  --secondary: #430a17;
+  --secondary-foreground: #fff5f7;
+  --muted: #2a0610;
+  --muted-foreground: #e8b4bd;
+  --accent: #570d1e;
+  --accent-foreground: #fff5f7;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgb(232 180 189 / 12%);
+  --input: rgb(232 180 189 / 15%);
+  --ring: #c23a55;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+}
