@@ -10,13 +10,18 @@ import {
   Eye,
   EyeOff,
   Lock,
+  RotateCcw,
+  Trash2,
   Unlock,
   XCircle,
 } from "lucide-react";
 
 import { BackLink } from "@/components/layout/BackLink";
 import { buttonVariants } from "@/components/ui/button";
-import type { HbdSubmissionRow } from "@/lib/hbd-submissions-store";
+import type {
+  HbdSubmissionAction,
+  HbdSubmissionRow,
+} from "@/lib/hbd-submissions-store";
 import {
   CTA_OUTLINE_CLASS,
   CTA_PRIMARY_CLASS,
@@ -27,7 +32,34 @@ import { cn } from "@/lib/utils";
 
 const DISPLAY = "font-[family-name:var(--font-display)]";
 
-type Tab = "pending" | "approved";
+type Tab = "pending" | "approved" | "rejected";
+
+const TABS: { id: Tab; label: string; empty: string }[] = [
+  {
+    id: "pending",
+    label: "รออนุมัติ (Pending)",
+    empty: "รอเซไนท์ส่งการ์ดคำอวยพรจากหน้า /upload",
+  },
+  {
+    id: "approved",
+    label: "อนุมัติแล้ว (Approved)",
+    empty: "ยังไม่มีรายการที่ได้รับการอนุมัติ",
+  },
+  {
+    id: "rejected",
+    label: "ลบแล้ว (Removed)",
+    empty: "ไม่มีรายการที่ถูกปฏิเสธหรือลบ",
+  },
+];
+
+const ACTION_BUTTON_CLASS =
+  "inline-flex items-center gap-1.5 rounded-xl px-3.5 text-xs transition";
+const APPROVE_BUTTON_CLASS =
+  "border border-emerald-500/50 bg-emerald-500/20 font-semibold text-emerald-200 shadow-sm hover:bg-emerald-500/30 hover:text-white";
+const NEUTRAL_BUTTON_CLASS =
+  "border-[#e8b4bd]/30 bg-[#1a0409]/60 text-[#f7d7de] hover:bg-[#e8b4bd]/10 hover:text-white";
+const DANGER_BUTTON_CLASS =
+  "border-red-500/40 bg-red-500/10 text-red-200 hover:bg-red-500/20 hover:text-white";
 
 export function AdminHbdClient() {
   const [unlocked, setUnlocked] = useState(false);
@@ -129,15 +161,27 @@ export function AdminHbdClient() {
     await load(next);
   }
 
-  async function act(id: string, action: "approve" | "reject") {
+  async function act(id: string, action: HbdSubmissionAction | "delete") {
+    if (
+      action === "delete" &&
+      !window.confirm("ลบถาวร? การ์ดและรูปจะถูกลบออกจากระบบ กู้คืนไม่ได้")
+    ) {
+      return;
+    }
+
     setActingId(id);
     setError(null);
     try {
-      const res = await fetch(`/api/hbd/admin/submissions/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
+      const res = await fetch(
+        `/api/hbd/admin/submissions/${id}`,
+        action === "delete"
+          ? { method: "DELETE" }
+          : {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action }),
+            }
+      );
       const data = (await res.json()) as { error?: string };
       if (!res.ok) {
         setError(data.error ?? "อัปเดตไม่สำเร็จ");
@@ -287,37 +331,28 @@ export function AdminHbdClient() {
 
       {/* 🏷️ Segmented Pill Tabs */}
       <div className="mt-6 flex items-center gap-2 rounded-2xl border border-[#e8b4bd]/15 bg-[#1a0409]/80 p-1.5 shadow-inner">
-        <button
-          type="button"
-          onClick={() => switchTab("pending")}
-          className={cn(
-            "flex-1 rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition sm:text-sm",
-            tab === "pending"
-              ? "border border-[#c23a55]/60 bg-[#c23a55]/25 text-[#fff5f7] shadow-[0_0_16px_rgba(194,58,85,0.3)]"
-              : "text-[#e8b4bd]/65 hover:text-[#fff5f7]"
-          )}
-        >
-          <span className="inline-flex items-center gap-1.5">
-            <span>รออนุมัติ (Pending)</span>
-            {pendingCount > 0 ? (
-              <span className="rounded-full bg-[#c23a55] px-2 py-0.2 text-[0.68rem] font-bold text-white shadow-sm">
-                {pendingCount}
-              </span>
-            ) : null}
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => switchTab("approved")}
-          className={cn(
-            "flex-1 rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition sm:text-sm",
-            tab === "approved"
-              ? "border border-[#c23a55]/60 bg-[#c23a55]/25 text-[#fff5f7] shadow-[0_0_16px_rgba(194,58,85,0.3)]"
-              : "text-[#e8b4bd]/65 hover:text-[#fff5f7]"
-          )}
-        >
-          อนุมัติแล้ว (Approved)
-        </button>
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => switchTab(id)}
+            className={cn(
+              "flex-1 rounded-xl px-2 py-2 text-xs font-semibold tracking-wide transition sm:px-4 sm:text-sm",
+              tab === id
+                ? "border border-[#c23a55]/60 bg-[#c23a55]/25 text-[#fff5f7] shadow-[0_0_16px_rgba(194,58,85,0.3)]"
+                : "text-[#e8b4bd]/65 hover:text-[#fff5f7]"
+            )}
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <span>{label}</span>
+              {id === "pending" && pendingCount > 0 ? (
+                <span className="rounded-full bg-[#c23a55] px-2 py-0.2 text-[0.68rem] font-bold text-white shadow-sm">
+                  {pendingCount}
+                </span>
+              ) : null}
+            </span>
+          </button>
+        ))}
       </div>
 
       {error ? (
@@ -344,9 +379,7 @@ export function AdminHbdClient() {
             ยังไม่มีรายการในสถานะนี้
           </p>
           <p className="mt-1.5 text-xs text-[#e8b4bd]/65">
-            {tab === "pending"
-              ? "รอเซไนท์ส่งการ์ดคำอวยพรจากหน้า /upload"
-              : "ยังไม่มีรายการที่ได้รับการอนุมัติ"}
+            {TABS.find((t) => t.id === tab)?.empty}
           </p>
         </div>
       ) : (
@@ -408,35 +441,100 @@ export function AdminHbdClient() {
                     </div>
                   </div>
 
-                  {/* 🔘 Action Buttons (Only in Pending tab) */}
-                  {tab === "pending" ? (
-                    <div className="mt-4 flex flex-wrap items-center gap-2.5 border-t border-[#e8b4bd]/10 pt-3.5">
-                      <button
-                        type="button"
-                        disabled={actingId === item.id}
-                        onClick={() => act(item.id, "approve")}
-                        className={cn(
-                          buttonVariants({ size: "sm" }),
-                          "inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/50 bg-emerald-500/20 px-3.5 text-xs font-semibold text-emerald-200 shadow-sm transition hover:bg-emerald-500/30 hover:text-white"
-                        )}
-                      >
-                        <CheckCircle2 className="size-3.5" />
-                        อนุมัติ (Approve)
-                      </button>
-                      <button
-                        type="button"
-                        disabled={actingId === item.id}
-                        onClick={() => act(item.id, "reject")}
-                        className={cn(
-                          buttonVariants({ variant: "outline", size: "sm" }),
-                          "inline-flex items-center gap-1.5 rounded-xl border-red-500/40 bg-red-500/10 px-3.5 text-xs text-red-200 transition hover:bg-red-500/20 hover:text-white"
-                        )}
-                      >
-                        <XCircle className="size-3.5" />
-                        ปฏิเสธ (Reject)
-                      </button>
-                    </div>
-                  ) : null}
+                  {/* 🔘 Action Buttons */}
+                  <div className="mt-4 flex flex-wrap items-center gap-2.5 border-t border-[#e8b4bd]/10 pt-3.5">
+                    {tab === "pending" ? (
+                      <>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "approve")}
+                          className={cn(
+                            buttonVariants({ size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            APPROVE_BUTTON_CLASS
+                          )}
+                        >
+                          <CheckCircle2 className="size-3.5" />
+                          อนุมัติ (Approve)
+                        </button>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "reject")}
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            DANGER_BUTTON_CLASS
+                          )}
+                        >
+                          <XCircle className="size-3.5" />
+                          ปฏิเสธ (Reject)
+                        </button>
+                      </>
+                    ) : tab === "approved" ? (
+                      <>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "hide")}
+                          title="เอาออกจากหน้าเว็บ แล้วย้ายกลับไปรออนุมัติ"
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            NEUTRAL_BUTTON_CLASS
+                          )}
+                        >
+                          <EyeOff className="size-3.5" />
+                          ซ่อน (Hide)
+                        </button>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "remove")}
+                          title="เอาออกจากหน้าเว็บ แล้วย้ายไปแท็บลบแล้ว"
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            DANGER_BUTTON_CLASS
+                          )}
+                        >
+                          <Trash2 className="size-3.5" />
+                          ลบ (Remove)
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "restore")}
+                          title="ย้ายกลับไปรออนุมัติ"
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            NEUTRAL_BUTTON_CLASS
+                          )}
+                        >
+                          <RotateCcw className="size-3.5" />
+                          กู้คืน (Restore)
+                        </button>
+                        <button
+                          type="button"
+                          disabled={actingId === item.id}
+                          onClick={() => act(item.id, "delete")}
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "sm" }),
+                            ACTION_BUTTON_CLASS,
+                            DANGER_BUTTON_CLASS
+                          )}
+                        >
+                          <Trash2 className="size-3.5" />
+                          ลบถาวร (Delete)
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </li>

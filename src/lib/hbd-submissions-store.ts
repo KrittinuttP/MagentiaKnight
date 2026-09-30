@@ -159,45 +159,74 @@ export async function createHbdSubmission(
   return mapRow(data as Record<string, unknown>);
 }
 
-export async function approveHbdSubmission(
-  id: string
+export type HbdSubmissionAction =
+  | "approve"
+  | "reject"
+  | "hide"
+  | "remove"
+  | "restore";
+
+const TRANSITIONS: Record<
+  HbdSubmissionAction,
+  { from: HbdSubmissionStatus[]; to: HbdSubmissionStatus }
+> = {
+  approve: { from: ["pending"], to: "approved" },
+  reject: { from: ["pending"], to: "rejected" },
+  hide: { from: ["approved"], to: "pending" },
+  remove: { from: ["approved"], to: "rejected" },
+  restore: { from: ["rejected"], to: "pending" },
+};
+
+export function isHbdSubmissionAction(
+  value: unknown
+): value is HbdSubmissionAction {
+  return typeof value === "string" && value in TRANSITIONS;
+}
+
+export async function updateHbdSubmissionStatus(
+  id: string,
+  action: HbdSubmissionAction
 ): Promise<HbdSubmissionRow> {
+  const { from, to } = TRANSITIONS[action];
   const supabase = createAdminClient();
   const now = new Date().toISOString();
   const { data, error } = await supabase
     .from("magentia_knight_hbd_submissions")
     .update({
-      status: "approved",
-      approved_at: now,
-      reviewed_at: now,
+      status: to,
+      approved_at: to === "approved" ? now : null,
+      reviewed_at: to === "pending" ? null : now,
     })
     .eq("id", id)
-    .eq("status", "pending")
+    .in("status", from)
     .select("*")
-    .single();
+    .maybeSingle();
 
   if (error) throw new Error(error.message);
+  if (!data) throw new Error("ไม่พบรายการ หรือสถานะถูกเปลี่ยนไปแล้ว");
   return mapRow(data as Record<string, unknown>);
 }
 
-export async function rejectHbdSubmission(
-  id: string
-): Promise<HbdSubmissionRow> {
+/** Permanently deletes a rejected submission and its uploaded images. */
+export async function deleteHbdSubmission(id: string): Promise<void> {
   const supabase = createAdminClient();
-  const now = new Date().toISOString();
   const { data, error } = await supabase
     .from("magentia_knight_hbd_submissions")
-    .update({
-      status: "rejected",
-      reviewed_at: now,
-    })
+    .delete()
     .eq("id", id)
-    .eq("status", "pending")
-    .select("*")
-    .single();
+    .eq("status", "rejected")
+    .select("card_path, avatar_path")
+    .maybeSingle();
 
   if (error) throw new Error(error.message);
-  return mapRow(data as Record<string, unknown>);
+  if (!data) throw new Error("ลบถาวรได้เฉพาะรายการในแท็บลบแล้ว");
+
+  const paths = [data.card_path, data.avatar_path].filter(
+    (p): p is string => typeof p === "string" && p.length > 0
+  );
+  if (paths.length) {
+    await supabase.storage.from(HBD_STORAGE_BUCKET).remove(paths);
+  }
 }
 
 export function extensionForMime(mime: string): string {
