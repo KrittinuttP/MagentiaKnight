@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { Download, Eraser, Loader2, Pencil, Sparkles, Upload, X } from "lucide-react";
 
+import { RoyalDivider } from "@/components/hbd/RoyalDivider";
 import { BackLink } from "@/components/layout/BackLink";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -272,7 +273,7 @@ export function HbdUploadClient() {
     await new Promise((r) => setTimeout(r, 450));
     setLoading(false);
     setPhase("preview");
-    setNotify("ตัวอย่างการ์ดอวยพร — กรุณาตรวจสอบข้อมูลก่อนกดยืนยันส่ง");
+    setNotify("ตัวอย่างการ์ดถวายพร — กรุณาตรวจสอบข้อมูลก่อนกดยืนยันถวายพร");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -319,7 +320,7 @@ export function HbdUploadClient() {
       clearMedia();
 
       setPhase("done");
-      setNotify("ส่งการ์ดอวยพรเรียบร้อยแล้ว — การ์ดจะถูกนำไปจัดแสดงในหน้ารวมคำอวยพรเร็วๆ นี้");
+      setNotify("ถวายพรเรียบร้อยแล้ว — การ์ดจะถูกนำไปจัดแสดงในหน้ารวมคำถวายพรเร็วๆ นี้");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setError("เครือข่ายมีปัญหา — ลองอีกครั้ง");
@@ -404,25 +405,26 @@ export function HbdUploadClient() {
         ) : null}
 
         <BackLink href="/" className="mb-8">
-          กลับไปดูคำอวยพร
+          กลับไปดูคำถวายพร
         </BackLink>
 
         <div className="mx-auto max-w-lg">
         {/* 1. Hero */}
         <header className="text-center">
-          <p className="inline-flex rounded-full bg-[#c23a55]/15 px-3 py-1 text-[0.7rem] tracking-[0.2em] text-[#e8b4bd] uppercase">
-            Birthday · 09.10.2026
+          <p className="inline-flex rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase">
+            Royal Birthday · 09.10.2026
           </p>
           <h1
             className={cn(
               DISPLAY,
-              "mt-4 text-3xl font-normal tracking-tight text-[#fff5f7] sm:text-4xl"
+              "mt-4 text-3xl font-normal text-[#fff5f7] sm:text-4xl"
             )}
           >
-            ส่งการ์ดอวยพร
+            ส่งการ์ดถวายพร
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#e8b4bd]/80 sm:text-base">
-            เชิญชวนเซไนท์มาอวยพรวันเกิดให้องค์หญิง Roselia ในปี 2026
+          <RoyalDivider className="mt-4" />
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#e8b4bd]/80 sm:text-base">
+            เชิญเหล่าเซไนท์ร่วมถวายพรในวันประสูติขององค์หญิง Roselia 2026
           </p>
         </header>
 
@@ -440,7 +442,7 @@ export function HbdUploadClient() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={HBD_CARD_TEMPLATE.previewPath}
-            alt="ตัวอย่างเทมเพลตการ์ดอวยพร"
+            alt="ตัวอย่างเทมเพลตการ์ดถวายพร"
             className="h-auto w-full max-w-[13rem] rounded-2xl object-contain shadow-[0_20px_50px_rgba(0,0,0,0.45)] ring-1 ring-white/10 sm:max-w-[14.5rem]"
           />
           <a
@@ -581,7 +583,7 @@ export function HbdUploadClient() {
 
             {/* 5. Message */}
             <label className="block rounded-3xl bg-white/[0.03] p-5 ring-1 ring-white/10 sm:p-6">
-              <span className={labelClass}>ข้อความอวยพร</span>
+              <span className={labelClass}>ข้อความถวายพร</span>
               <span className="ml-2 text-xs text-[#e8b4bd]/50">ไม่บังคับ</span>
               <textarea
                 value={message}
@@ -682,7 +684,7 @@ export function HbdUploadClient() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={preview.cardPreviewUrl}
-                    alt="การ์ดอวยพร"
+                    alt="การ์ดถวายพร"
                     className="h-auto max-h-[min(70vh,36rem)] w-auto max-w-full object-contain"
                   />
                 </div>
@@ -702,7 +704,7 @@ export function HbdUploadClient() {
                         "text-lg font-normal text-[#fff5f7]"
                       )}
                     >
-                      จาก {preview.displayName}
+                      ถวายพรโดย {preview.displayName}
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-[#e8b4bd]/55">
                       ข้อมูลติดต่อจะไม่แสดงบนหน้าเว็บ
@@ -715,7 +717,7 @@ export function HbdUploadClient() {
                   </p>
                 ) : (
                   <p className="mt-4 text-sm text-[#e8b4bd]/45">
-                    ไม่มีข้อความอวยพร
+                    ไม่มีข้อความถวายพร
                   </p>
                 )}
               </div>
@@ -754,7 +756,7 @@ export function HbdUploadClient() {
                 )}
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : null}
-                ยืนยันส่งการ์ดอวยพร
+                ยืนยันถวายพร
               </button>
             </div>
           </div>
@@ -766,7 +768,7 @@ export function HbdUploadClient() {
               ขอบคุณนะเซไนท์
             </p>
             <p className="mt-3 text-sm leading-relaxed text-[#e8b4bd]/80">
-              การ์ดของคุณจะถูกนำไปจัดแสดงในหน้ารวมคำอวยพรเร็วๆ นี้
+              การ์ดของคุณจะถูกนำไปจัดแสดงในหน้ารวมคำถวายพรเร็วๆ นี้
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
@@ -777,7 +779,7 @@ export function HbdUploadClient() {
                   "rounded-2xl border-transparent bg-[#c23a55] font-normal text-white hover:bg-[#d9506b]"
                 )}
               >
-                ไปดูคำอวยพร
+                ไปดูคำถวายพร
               </Link>
               <button
                 type="button"

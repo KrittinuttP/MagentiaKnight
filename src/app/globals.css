@@ -7,10 +7,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* Cinzel has no Thai glyphs, so Thai text in display falls through to Trirong */
+  --font-sans: var(--font-noto-sans-thai), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cinzel), var(--font-trirong), ui-serif, serif;
+  --font-script: var(--font-charm), var(--font-trirong), ui-serif, serif;
   --font-mono: ui-monospace, monospace;
-  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-cinzel), var(--font-trirong), ui-serif, serif;
+  --color-gold: #e3c07a;
+  --color-gold-soft: #f3dfae;
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -40,7 +44,7 @@
   --radius: 0.625rem;
 }
 
-/* Black / deep-red palette (Roselia): #000000 · #430a17 · #570d1e, accent #c23a55 */
+/* Black / deep-red palette (Roselia): #000000 · #430a17 · #570d1e, accent #c23a55, gold #e3c07a */
 .dark {
   --background: #000000;
   --foreground: #fff5f7;

@@ -17,6 +17,10 @@ export interface HbdPage {
   subtitle: string;
   year?: number;
   occasionLabel?: string;
+  /** Casual invite line shown above the hero CTA */
+  invitation?: string;
   closingMessage?: string;
+  /** Warm sign-off lines under the closing message, one per line */
+  closingNote?: string[];
   wishes: HbdWish[];
 }

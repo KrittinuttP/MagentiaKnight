@@ -58,7 +58,7 @@ export function submissionToWish(row: HbdSubmissionRow): HbdWish {
   return {
     id: `upload-${row.id}`,
     from: row.display_name,
-    message: row.message?.trim() || "สุขสันต์วันเกิดองค์หญิง Roselia 🎂",
+    message: row.message?.trim() || "ขอถวายพรแด่องค์หญิง Roselia ในวันประสูติ 🎂",
     image: row.card_url,
     alt: `Wish from ${row.display_name}`,
     avatar: row.avatar_url?.trim() || HBD_AVATAR_DEFAULT,

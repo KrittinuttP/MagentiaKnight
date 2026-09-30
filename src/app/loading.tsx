@@ -5,11 +5,11 @@ export default function Hbd2026Loading() {
         className="size-10 animate-pulse rounded-full bg-[#c23a55]/35 ring-2 ring-[#c23a55]/25"
         aria-hidden
       />
-      <p className="mt-5 text-xs tracking-[0.22em] text-[#e8b4bd]/80 uppercase sm:text-sm">
-        Birthday · 2026
+      <p className="mt-5 text-xs tracking-[0.22em] text-gold-soft/80 uppercase sm:text-sm">
+        Royal Birthday · 2026
       </p>
       <p className="mt-3 font-[family-name:var(--font-display)] text-xl font-normal tracking-normal sm:text-2xl">
-        กำลังโหลดคำอวยพร…
+        กำลังโหลดคำถวายพร…
       </p>
       <p className="mt-2 max-w-xs text-center text-sm text-[#e8b4bd]/65">
         ดึงข้อมูลล่าสุดจากเซไนท์

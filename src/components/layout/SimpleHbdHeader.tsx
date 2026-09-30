@@ -9,7 +9,7 @@ export function SimpleHbdHeader() {
           href="/"
           className="flex items-center gap-2 text-[#fff5f7] transition hover:opacity-85"
         >
-          <span className="flex size-7 items-center justify-center rounded-full bg-[#c23a55]/20 text-[#c23a55]">
+          <span className="flex size-7 items-center justify-center rounded-full bg-gold/15 text-gold ring-1 ring-gold/30">
             <Crown className="size-4" />
           </span>
           <span className="text-sm font-semibold tracking-wide sm:text-base">
@@ -22,7 +22,7 @@ export function SimpleHbdHeader() {
             href="/"
             className="rounded-xl px-3 py-1.5 text-xs font-medium text-[#e8b4bd]/80 transition hover:bg-white/5 hover:text-[#fff5f7]"
           >
-            คำอวยพร
+            คำถวายพร
           </Link>
           <Link
             href="/upload"
@@ -30,7 +30,7 @@ export function SimpleHbdHeader() {
             className="inline-flex items-center gap-1.5 rounded-xl bg-[#c23a55] px-3.5 py-1.5 text-xs font-medium text-white shadow-[0_0_15px_rgba(194,58,85,0.35)] transition hover:bg-[#d9506b]"
           >
             <Sparkles className="size-3.5" />
-            <span>ส่งการ์ด</span>
+            <span>ร่วมถวายพร</span>
           </Link>
           <Link
             href="/admin"

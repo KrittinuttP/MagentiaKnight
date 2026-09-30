@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { RoyalDivider } from "@/components/hbd/RoyalDivider";
 import { ProtectedImage } from "@/components/media/ProtectedImage";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -306,7 +307,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
         <div className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-5 text-center sm:px-10">
           <p
             data-hbd-anim
-            className="inline-flex self-center rounded-full bg-[#c23a55]/15 px-3 py-1 text-[0.7rem] tracking-[0.2em] text-[#e8b4bd] uppercase"
+            className="inline-flex self-center rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase"
           >
             {hbd.occasionLabel ?? "Birthday"}
             {hbd.year ? ` · ${hbd.year}` : null}
@@ -316,7 +317,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             data-hbd-anim
             className={cn(
               DISPLAY,
-              "mt-5 text-4xl font-normal tracking-tight sm:text-6xl md:text-7xl"
+              "mt-5 text-4xl font-normal tracking-[0.04em] sm:text-6xl md:text-7xl"
             )}
           >
             {hbd.title}
@@ -325,7 +326,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
           {hbd.titleLocal ? (
             <p
               data-hbd-anim
-              className="mt-4 text-xl text-[#e8b4bd]/85 sm:text-2xl"
+              className="mt-4 font-script text-2xl text-gold-soft sm:text-3xl"
             >
               {hbd.titleLocal}
             </p>
@@ -338,10 +339,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             {hbd.subtitle.includes("—") || hbd.subtitle.includes("–") ? (
               <div className="flex flex-col items-center gap-3">
                 <p>{hbd.subtitle.split(/\s*[—–]\s*/)[0]}</p>
-                <div
-                  className="h-px w-24 bg-[#c23a55]/45 sm:w-32"
-                  aria-hidden
-                />
+                <RoyalDivider />
                 <p className="text-[#e8b4bd]/70">
                   {hbd.subtitle.split(/\s*[—–]\s*/).slice(1).join(" — ")}
                 </p>
@@ -351,14 +349,22 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             )}
           </div>
 
-          <div data-hbd-anim className="mt-10 flex justify-center">
+          <div
+            data-hbd-anim
+            className="mt-10 flex flex-col items-center gap-4"
+          >
+            {hbd.invitation ? (
+              <p className="text-base text-[#e8b4bd]/85 sm:text-lg">
+                {hbd.invitation}
+              </p>
+            ) : null}
             <Link
               href="/upload"
               prefetch={false}
               className="inline-flex items-center gap-2 rounded-2xl bg-[#c23a55] px-6 py-3.5 text-sm font-normal text-white shadow-[0_10px_30px_rgba(194,58,85,0.35)] transition hover:bg-[#d9506b]"
             >
               <Sparkles className="size-4" />
-              ส่งการ์ดอวยพร · 09.10.2026
+              ร่วมถวายพร · 09.10.2026
             </Link>
           </div>
 
@@ -378,19 +384,23 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             key={wish.id}
             data-hbd-card
             className="will-change-transform"
-            aria-label={`คำอวยพรจาก ${wish.from}`}
+            aria-label={`คำถวายพรจาก ${wish.from}`}
           >
             <div
               data-hbd-media
-              className="relative overflow-hidden rounded-3xl bg-black/25 ring-1 ring-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.4)] will-change-transform"
+              className="relative overflow-hidden rounded-3xl bg-black/25 ring-1 ring-gold/35 shadow-[0_24px_60px_rgba(0,0,0,0.4),0_0_32px_rgba(227,192,122,0.08)] will-change-transform"
             >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-1.5 z-10 rounded-[1.25rem] border border-gold/20 sm:inset-2"
+              />
               {wish.image ? (
                 <button
                   type="button"
                   data-hbd-media-inner
                   onClick={() => openLightbox(wish.id)}
-                  aria-label={`ดูรูปใหญ่ — จาก ${wish.from}`}
-                  className="flex w-full cursor-zoom-in justify-center px-2 py-3 will-change-transform transition hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c23a55]/60 focus-visible:ring-inset sm:px-3 sm:py-4"
+                  aria-label={`ดูรูปใหญ่ — ถวายพรโดย ${wish.from}`}
+                  className="flex w-full cursor-zoom-in justify-center p-3.5 will-change-transform transition hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c23a55]/60 focus-visible:ring-inset sm:p-5"
                 >
                   <ProtectedImage
                     src={wish.image}
@@ -405,7 +415,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                   />
                 </button>
               ) : (
-                <div className="flex min-h-[20rem] items-center justify-center text-[#e8b4bd] opacity-40">
+                <div className="flex min-h-[20rem] items-center justify-center text-gold opacity-40">
                   <Crown className="size-16" aria-hidden />
                 </div>
               )}
@@ -418,16 +428,21 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                   alt=""
                   loading={index < EAGER_CARD_COUNT ? "eager" : "lazy"}
                   decoding="async"
-                  className="size-12 shrink-0 rounded-full object-cover ring-2 ring-[#c23a55]/35 sm:size-14"
+                  className="size-12 shrink-0 rounded-full object-cover ring-2 ring-gold/40 sm:size-14"
                 />
-                <h2
-                  className={cn(
-                    DISPLAY,
-                    "text-left text-2xl font-normal sm:text-3xl"
-                  )}
-                >
-                  จาก {wish.from}
-                </h2>
+                <div className="min-w-0 text-left">
+                  <p className="font-script text-base leading-tight text-gold sm:text-lg">
+                    ถวายพรโดย
+                  </p>
+                  <h2
+                    className={cn(
+                      DISPLAY,
+                      "text-2xl font-normal leading-snug sm:text-3xl"
+                    )}
+                  >
+                    {wish.from}
+                  </h2>
+                </div>
               </div>
               <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-[#f7d7de]/90 sm:text-lg">
                 {wish.message}
@@ -451,15 +466,15 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             <div
               className={cn(
                 DISPLAY,
-                "mx-auto flex max-w-lg flex-col items-center gap-4 sm:gap-5"
+                "mx-auto flex max-w-2xl flex-col items-center gap-4 sm:gap-5"
               )}
             >
               <p
                 data-hbd-anim
-                className="text-[#c23a55]"
+                className="text-gold drop-shadow-[0_0_14px_rgba(227,192,122,0.35)]"
                 aria-hidden
               >
-                <Crown className="size-8 sm:size-10" />
+                <Crown className="size-8 sm:size-10" strokeWidth={1.5} />
               </p>
               {hbd.closingMessage.includes("—") ||
               hbd.closingMessage.includes("–") ? (
@@ -467,15 +482,11 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                   <p
                     data-hbd-anim
                     data-hbd-close-headline
-                    className="text-3xl font-normal tracking-tight text-[#fff5f7] sm:text-5xl"
+                    className="font-script text-4xl font-normal leading-tight text-balance text-gold-soft sm:text-5xl"
                   >
                     {hbd.closingMessage.split(/\s*[—–]\s*/)[0]}
                   </p>
-                  <div
-                    data-hbd-anim
-                    className="h-px w-28 bg-[#c23a55]/55 sm:w-40"
-                    aria-hidden
-                  />
+                  <RoyalDivider data-hbd-anim />
                   <p
                     data-hbd-anim
                     className="max-w-md text-lg font-normal leading-relaxed text-[#e8b4bd]/90 sm:text-2xl"
@@ -490,11 +501,21 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                 <p
                   data-hbd-anim
                   data-hbd-close-headline
-                  className="text-3xl font-normal tracking-tight text-[#fff5f7] sm:text-5xl"
+                  className="font-script text-4xl font-normal leading-tight text-balance text-gold-soft sm:text-5xl"
                 >
                   {hbd.closingMessage}
                 </p>
               )}
+              {hbd.closingNote?.length ? (
+                <div
+                  data-hbd-anim
+                  className="mt-6 space-y-1 font-script text-2xl leading-relaxed text-[#f7d7de] sm:mt-8 sm:text-3xl"
+                >
+                  {hbd.closingNote.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              ) : null}
               <p
                 data-hbd-anim
                 className="mt-2 text-xl opacity-80 sm:text-2xl"
@@ -521,10 +542,10 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             <>
               <DialogHeader className="shrink-0 px-1 pt-0.5 pr-10 sm:px-2">
                 <DialogTitle className={cn(DISPLAY, "text-base sm:text-lg")}>
-                  จาก {activeLightbox.from}
+                  ถวายพรโดย {activeLightbox.from}
                 </DialogTitle>
                 <DialogDescription className="sr-only">
-                  ดูรูปอวยพรขนาดใหญ่
+                  ดูการ์ดถวายพรขนาดใหญ่
                 </DialogDescription>
               </DialogHeader>
 
