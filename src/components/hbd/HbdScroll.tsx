@@ -487,15 +487,21 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                     {hbd.closingMessage.split(/\s*[—–]\s*/)[0]}
                   </p>
                   <RoyalDivider data-hbd-anim />
-                  <p
-                    data-hbd-anim
-                    className="max-w-md text-lg font-normal leading-relaxed text-[#e8b4bd]/90 sm:text-2xl"
-                  >
-                    {hbd.closingMessage
-                      .split(/\s*[—–]\s*/)
-                      .slice(1)
-                      .join(" — ")}
-                  </p>
+                  {hbd.closingMessage
+                    .split(/\s*[—–]\s*/)
+                    .slice(1)
+                    .join(" — ")
+                    .trim() ? (
+                    <p
+                      data-hbd-anim
+                      className="max-w-md text-lg font-normal leading-relaxed text-[#e8b4bd]/90 sm:text-2xl"
+                    >
+                      {hbd.closingMessage
+                        .split(/\s*[—–]\s*/)
+                        .slice(1)
+                        .join(" — ")}
+                    </p>
+                  ) : null}
                 </>
               ) : (
                 <p
@@ -509,7 +515,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
               {hbd.closingNote?.length ? (
                 <div
                   data-hbd-anim
-                  className="mt-6 space-y-1 font-script text-2xl leading-relaxed text-[#f7d7de] sm:mt-8 sm:text-3xl"
+                  className="space-y-1 font-script text-2xl leading-relaxed text-[#f7d7de] sm:text-3xl"
                 >
                   {hbd.closingNote.map((line) => (
                     <p key={line}>{line}</p>
