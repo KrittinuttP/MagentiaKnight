@@ -9,7 +9,7 @@ export default function Hbd2026Loading() {
         #RoseliaBirthday2023
       </p>
       <p className="mt-3 font-[family-name:var(--font-display)] text-xl font-normal tracking-normal sm:text-2xl">
-        กำลังโหลดคำอวยพร…
+        เหล่าเซไนท์กำลังทำงาน…
       </p>
       <p className="mt-2 max-w-xs text-center text-sm text-[#e8b4bd]/65">
         ดึงข้อมูลล่าสุดจากเซไนท์
