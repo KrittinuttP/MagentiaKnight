@@ -7,7 +7,7 @@ import { SimpleHbdHeader } from "@/components/layout/SimpleHbdHeader";
 export const metadata: Metadata = {
   title: "ส่งการ์ดถวายพร | Roselia HBD 2026",
   description:
-    "ร่วมถวายพรในวันประสูติของ Roselia de Magentia · 09.10.2026 — จากเหล่าเซไนท์ถึงองค์หญิงของเรา",
+    "ส่งของขวัญตรงนี้ในวันประสูติของ Roselia de Magentia · 09.10.2026 — จากเหล่าเซไนท์ถึงองค์หญิงของเรา",
 };
 
 export default function UploadPage() {

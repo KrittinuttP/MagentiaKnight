@@ -310,7 +310,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             className="inline-flex self-center rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase"
           >
             {hbd.occasionLabel ?? "Birthday"}
-            {hbd.year ? ` · ${hbd.year}` : null}
+            {/* {hbd.year ? ` · ${hbd.year}` : null} */}
           </p>
 
           <h1
@@ -364,7 +364,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
               className="inline-flex items-center gap-2 rounded-2xl bg-[#c23a55] px-6 py-3.5 text-sm font-normal text-white shadow-[0_10px_30px_rgba(194,58,85,0.35)] transition hover:bg-[#d9506b]"
             >
               <Sparkles className="size-4" />
-              ร่วมถวายพร · 09.10.2026
+              ส่งของขวัญตรงนี้ · 09.10.2026
             </Link>
           </div>
 
@@ -384,7 +384,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
             key={wish.id}
             data-hbd-card
             className="will-change-transform"
-            aria-label={`คำถวายพรจาก ${wish.from}`}
+            aria-label={`คำอวยพรจาก ${wish.from}`}
           >
             <div
               data-hbd-media

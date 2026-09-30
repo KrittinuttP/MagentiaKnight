@@ -320,7 +320,7 @@ export function HbdUploadClient() {
       clearMedia();
 
       setPhase("done");
-      setNotify("ถวายพรเรียบร้อยแล้ว — การ์ดจะถูกนำไปจัดแสดงในหน้ารวมคำถวายพรเร็วๆ นี้");
+      setNotify("ถวายพรเรียบร้อยแล้ว — การ์ดจะถูกนำไปจัดแสดงในหน้ารวมคำอวยพรเร็วๆ นี้");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setError("เครือข่ายมีปัญหา — ลองอีกครั้ง");
@@ -405,14 +405,14 @@ export function HbdUploadClient() {
         ) : null}
 
         <BackLink href="/" className="mb-8">
-          กลับไปดูคำถวายพร
+          กลับไปดูคำอวยพร
         </BackLink>
 
         <div className="mx-auto max-w-lg">
         {/* 1. Hero */}
         <header className="text-center">
           <p className="inline-flex rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1 text-[0.7rem] tracking-[0.2em] text-gold-soft uppercase">
-            Royal Birthday · 09.10.2026
+            #RoseliaBirthday2026
           </p>
           <h1
             className={cn(
@@ -424,7 +424,7 @@ export function HbdUploadClient() {
           </h1>
           <RoyalDivider className="mt-4" />
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#e8b4bd]/80 sm:text-base">
-            เชิญเหล่าเซไนท์ร่วมถวายพรในวันประสูติขององค์หญิง Roselia 2026
+            เชิญเหล่าเซไนท์ส่งของขวัญตรงนี้ในวันเกิดขององค์หญิง Roselia 2026
           </p>
         </header>
 
@@ -768,7 +768,7 @@ export function HbdUploadClient() {
               ขอบคุณนะเซไนท์
             </p>
             <p className="mt-3 text-sm leading-relaxed text-[#e8b4bd]/80">
-              การ์ดของคุณจะถูกนำไปจัดแสดงในหน้ารวมคำถวายพรเร็วๆ นี้
+              การ์ดของคุณจะถูกนำไปจัดแสดงในหน้ารวมคำอวยพรเร็วๆ นี้
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
@@ -779,7 +779,7 @@ export function HbdUploadClient() {
                   "rounded-2xl border-transparent bg-[#c23a55] font-normal text-white hover:bg-[#d9506b]"
                 )}
               >
-                ไปดูคำถวายพร
+                ไปดูคำอวยพร
               </Link>
               <button
                 type="button"
