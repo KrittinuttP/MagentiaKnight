@@ -521,7 +521,7 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                 className="mt-2 text-xl opacity-80 sm:text-2xl"
                 aria-hidden
               >
-                ✨
+                ☀️🌙
               </p>
             </div>
           ) : null}
