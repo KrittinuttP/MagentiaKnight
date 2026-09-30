@@ -24,6 +24,12 @@ export const HBD_AVATAR_LIMITS = {
   accept: "image/jpeg,image/png,image/webp",
 } as const;
 
+/** e.g. HBD-Magentia_by_Seknight_มิลด์_อาร์.jpg */
+export function hbdCardDownloadName(from: string) {
+  const name = from.trim().replace(/[\\/:*?"<>|\s]+/g, "_") || "Seknight";
+  return `HBD-Magentia_by_Seknight_${name}.jpg`;
+}
+
 export type HbdContactChannel = "x" | "discord";
 
 export type HbdUploadDraft = {

@@ -7,6 +7,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Crown,
+  Download,
+  Loader2,
   Sparkles,
 } from "lucide-react";
 
@@ -19,7 +21,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { HBD_AVATAR_DEFAULT } from "@/lib/hbd-upload";
+import { HBD_AVATAR_DEFAULT, hbdCardDownloadName } from "@/lib/hbd-upload";
+import { downloadImageAsJpeg } from "@/lib/image-download";
+import { CTA_PRIMARY_CLASS } from "@/lib/site-ui";
 import {
   gsap,
   registerGsapPlugins,
@@ -47,6 +51,7 @@ function prefersReducedMotion() {
 export function HbdScroll({ hbd }: HbdScrollProps) {
   const rootRef = useRef<HTMLElement>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
   const wishes = useMemo(() => hbd.wishes, [hbd.wishes]);
 
@@ -69,6 +74,21 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
   const openLightbox = (wishId: string) => {
     const index = lightboxItems.findIndex((item) => item.id === wishId);
     if (index >= 0) setLightboxIndex(index);
+  };
+
+  const downloadActive = async () => {
+    if (!activeLightbox || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadImageAsJpeg(
+        activeLightbox.src,
+        hbdCardDownloadName(activeLightbox.from)
+      );
+    } catch {
+      window.open(activeLightbox.src, "_blank", "noopener");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const goPrev = () => {
@@ -543,9 +563,28 @@ export function HbdScroll({ hbd }: HbdScrollProps) {
                 ) : null}
               </div>
 
-              <p className="shrink-0 px-1 pb-0.5 text-center text-xs tracking-wide text-[#e8b4bd]/70 sm:px-2">
-                {(lightboxIndex ?? 0) + 1} / {lightboxItems.length}
-              </p>
+              <div className="flex shrink-0 items-center justify-between gap-3 px-1 pb-0.5 sm:px-2">
+                <p className="text-sm tracking-wide text-[#e8b4bd]/70">
+                  {(lightboxIndex ?? 0) + 1} / {lightboxItems.length}
+                </p>
+                <button
+                  type="button"
+                  onClick={downloadActive}
+                  disabled={downloading}
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    CTA_PRIMARY_CLASS,
+                    "h-10 gap-1.5 px-4 text-sm font-semibold sm:h-11 sm:px-5"
+                  )}
+                >
+                  {downloading ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Download className="size-4" />
+                  )}
+                  {downloading ? "กำลังเตรียมไฟล์…" : "ดาวน์โหลดรูป"}
+                </button>
+              </div>
             </>
           ) : null}
         </DialogContent>
